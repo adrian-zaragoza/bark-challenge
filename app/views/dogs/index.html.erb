@@ -1,1 +1,7 @@
-<%= render partial: 'thumbnail', collection: @dogs, as: :dog %>
+<div class="page-links">
+  <%= link_to_unless @current_page <= 1,  "Previous", dogs_path(page: @current_page - 1)  %>
+  <%= link_to_unless @current_page >= @total_pages, "Next", dogs_path(page: @current_page + 1)  %>
+</div>
+<%=  render partial: 'thumbnail', collection: @dogs, as: :dog %>
+
+

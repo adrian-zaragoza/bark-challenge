@@ -1,10 +1,21 @@
 class DogsController < ApplicationController
   before_action :set_dog, only: [:show, :edit, :update, :destroy]
-
+  @@max_dogs_per_page = 5
   # GET /dogs
   # GET /dogs.json
   def index
-    @dogs = Dog.all
+    if !params[:page]
+      @current_page = 1
+    else
+      @current_page = params[:page].to_i
+    end
+
+    if !@total_pages
+      total_dogs = Dog.all.count
+      @total_pages = (total_dogs / @@max_dogs_per_page).to_f.ceil
+    end
+    
+    @dogs = Dog.all.dogs_pages(@current_page, @@max_dogs_per_page)
   end
 
   # GET /dogs/1
