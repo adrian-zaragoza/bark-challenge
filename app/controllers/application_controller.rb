@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper_method :update_counter
-  
+
   def update_total_pages(max_per_page)
     total_dogs = Dog.all.count
     @total_pages = (total_dogs.to_f / max_per_page).ceil
@@ -12,7 +12,6 @@ class ApplicationController < ActionController::Base
     end
 
     @img_counter += 1
-
     return @img_counter
   end
 end

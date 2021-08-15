@@ -9,5 +9,5 @@ class Like < ApplicationRecord
   belongs_to :dog,
     foreign_key: :dog_id,
     class_name: "Dog"
-    
+  
 end
