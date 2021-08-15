@@ -1,15 +1,18 @@
 class ApplicationController < ActionController::Base
-  # helper_method :find_dog_like
-  # helper_method :valid_like?
+  helper_method :update_counter
+  
+  def update_total_pages(max_per_page)
+    total_dogs = Dog.all.count
+    @total_pages = (total_dogs.to_f / max_per_page).ceil
+  end
 
-  # def find_dog_like(dog)
-  #   @like = dog.likes.find_by(owner_id: current_user.id)
+  def update_counter
+    if !@img_counter || @img_counter == 2
+      @img_counter = 0
+    end
 
-  #   return @like
-  # end
+    @img_counter += 1
 
-  # def valid_like?(dog)
-  #   return dog.owner_id != current_user.id
-  # end
-
+    return @img_counter
+  end
 end

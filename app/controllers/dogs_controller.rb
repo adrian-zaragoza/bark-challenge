@@ -10,10 +10,7 @@ class DogsController < ApplicationController
       @current_page = params[:page].to_i
     end
 
-    if !@total_pages
-      total_dogs = Dog.all.count
-      @total_pages = (total_dogs / @@max_dogs_per_page).to_f.ceil
-    end
+    update_total_pages(@@max_dogs_per_page)
     
     @dogs = Dog.all.dogs_pages(@current_page, @@max_dogs_per_page)
   end
@@ -44,6 +41,7 @@ class DogsController < ApplicationController
     respond_to do |format|
       if @dog.save
         @dog.images.attach(params[:dog][:image]) if params[:dog][:image].present?
+        update_total_pages(@@max_dogs_per_page)
 
         format.html { redirect_to @dog, notice: 'Dog was successfully created.' }
         format.json { render :show, status: :created, location: @dog }
@@ -85,6 +83,8 @@ class DogsController < ApplicationController
   # DELETE /dogs/1.json
   def destroy
     @dog.destroy
+    update_total_pages(@@max_dogs_per_page)
+    
     respond_to do |format|
       format.html { redirect_to dogs_url, notice: 'Dog was successfully destroyed.' }
       format.json { head :no_content }
