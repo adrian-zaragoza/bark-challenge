@@ -1,4 +1,5 @@
 <div class="page-links">
+  <%# these lings will check the current page and the total pages and will disable the links if its true. %>
   <%= link_to_unless @current_page <= 1,  "Previous", dogs_path(page: @current_page - 1)  %>
   <%= link_to_unless @current_page >= @total_pages, "Next", dogs_path(page: @current_page + 1)  %>
 </div>

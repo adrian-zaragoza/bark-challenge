@@ -4,7 +4,7 @@
     <%= image_tag url_for(dog.images.first), class: "dog-photo", alt: "Photo of #{dog.name}" %>
   </article>
 </a>
-
+<%# the update counter function comes from the application controller where the counter value gets returned. if its 2, the ad image will appear %>
 <% if update_counter == 2 %>
   <%= image_tag("ad.jpg") %>
 <% end %>

@@ -7,10 +7,12 @@
 
   <p><%= @dog.description %></p>
 
+  <%# finds the like of the user if there is a current user %>
   <% if current_user %>
     <% user_like = @dog.likes.find_by(author_id: current_user.id) %>
   <% end %>
   
+  <%# checks if there is a current user and a user like and if true, shows the unlike link. if there is a current user and the owner id is not the current user, provides the like link %>
   <% if current_user && user_like %>
     <%= link_to "/dogs/#{@dog.id}/likes/#{user_like.id}", method: :delete do %>
       <h1>Unlike</h1>
@@ -20,7 +22,7 @@
       <h1>Like</h1>
     <% end %>
   <% end %>
-
+<%# disables the edit link if there is no current user and if the current user is not the owner of the dog %>
   <%= link_to_unless current_user.nil? || current_user.id != @dog.owner_id,  "Edit #{@dog.name}'s Profile", edit_dog_path %>
   <br>
   <%= link_to "Delete #{@dog.name}'s Profile", dog_path, method: :delete, data: { confirm: 'Are you sure?' } %>

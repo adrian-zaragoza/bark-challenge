@@ -4,12 +4,14 @@ class DogsController < ApplicationController
   # GET /dogs
   # GET /dogs.json
   def index
+    # sets the current page to 1 if there is no page params for index, otherwise sets it to the page params
     if !params[:page]
       @current_page = 1
     else
       @current_page = params[:page].to_i
     end
-
+    
+    # application controller method that updates the total pages.
     update_total_pages(@@max_dogs_per_page)
     
     @dogs = Dog.all.dogs_pages(@current_page, @@max_dogs_per_page)
@@ -57,6 +59,7 @@ class DogsController < ApplicationController
   def update
     @dog = Dog.find_by(id: params[:id])
 
+    # this will make sure that only the owner of the dog can update the dog.
     if current_user && current_user.id == @dog.owner_id
 
       respond_to do |format|
