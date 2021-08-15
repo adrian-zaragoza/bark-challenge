@@ -35,7 +35,11 @@ class DogsController < ApplicationController
   # POST /dogs
   # POST /dogs.json
   def create
-    @dog = Dog.new(dog_params)
+    if current_user
+      @dog = Dog.new(dog_params.merge({owner_id: current_user.id}))
+    else
+      @dog = Dog.new(dog_params)
+    end
 
     respond_to do |format|
       if @dog.save
@@ -53,15 +57,26 @@ class DogsController < ApplicationController
   # PATCH/PUT /dogs/1
   # PATCH/PUT /dogs/1.json
   def update
-    respond_to do |format|
-      if @dog.update(dog_params)
-        @dog.images.attach(params[:dog][:image]) if params[:dog][:image].present?
+    @dog = Dog.find_by(id: params[:id])
 
-        format.html { redirect_to @dog, notice: 'Dog was successfully updated.' }
-        format.json { render :show, status: :ok, location: @dog }
-      else
-        format.html { render :edit }
-        format.json { render json: @dog.errors, status: :unprocessable_entity }
+    if current_user && current_user.id == @dog.owner_id
+
+      respond_to do |format|
+        if @dog.update(dog_params)
+          @dog.images.attach(params[:dog][:image]) if params[:dog][:image].present?
+
+          format.html { redirect_to @dog, notice: 'Dog was successfully updated.' }
+          format.json { render :show, status: :ok, location: @dog }
+        else
+          format.html { render :edit }
+          format.json { render json: @dog.errors, status: :unprocessable_entity }
+        end
+      end
+
+    else
+      respond_to do |format|
+        format.html { redirect_to dog_url(@dog.id), notice: 'You are not authoried to edit this dog' }
+        format.json { render json: "You are not authorized to edit this dog's profile", status: :unprocessable_entity }
       end
     end
   end

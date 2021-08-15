@@ -7,7 +7,21 @@
 
   <p><%= @dog.description %></p>
 
-  <%= link_to "Edit #{@dog.name}'s Profile", edit_dog_path %>
+  <% if current_user %>
+    <% user_like = @dog.likes.find_by(author_id: current_user.id) %>
+  <% end %>
+  
+  <% if current_user && user_like %>
+    <%= link_to "/dogs/#{@dog.id}/likes/#{user_like.id}", method: :delete do %>
+      <h1>Unlike</h1>
+    <% end %>
+    <% elsif current_user && @dog.owner_id != current_user.id %>
+        <%= link_to "/dogs/#{@dog.id}/likes", method: :post do %>
+      <h1>Like</h1>
+    <% end %>
+  <% end %>
+
+  <%= link_to_unless current_user.nil? || current_user.id != @dog.owner_id,  "Edit #{@dog.name}'s Profile", edit_dog_path %>
   <br>
   <%= link_to "Delete #{@dog.name}'s Profile", dog_path, method: :delete, data: { confirm: 'Are you sure?' } %>
 </section>
