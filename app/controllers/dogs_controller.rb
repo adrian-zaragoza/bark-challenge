@@ -1,5 +1,6 @@
 class DogsController < ApplicationController
   before_action :set_dog, only: [:show, :edit, :update, :destroy]
+  # before_action :current_user_valid?, only: [:update, :destroy]
   @@max_dogs_per_page = 5
   # GET /dogs
   # GET /dogs.json
@@ -60,7 +61,7 @@ class DogsController < ApplicationController
     @dog = Dog.find_by(id: params[:id])
 
     # this will make sure that only the owner of the dog can update the dog.
-    if current_user && current_user.id == @dog.owner_id
+    if current_user_valid?(@dog)
 
       respond_to do |format|
         if @dog.update(dog_params)
@@ -76,7 +77,7 @@ class DogsController < ApplicationController
 
     else
       respond_to do |format|
-        format.html { redirect_to dog_url(@dog.id), notice: 'You are not authoried to edit this dog' }
+        format.html { redirect_to dog_url(@dog.id), notice: 'You are not authoriced to edit this dog' }
         format.json { render json: "You are not authorized to edit this dog's profile", status: :unprocessable_entity }
       end
     end
@@ -85,12 +86,19 @@ class DogsController < ApplicationController
   # DELETE /dogs/1
   # DELETE /dogs/1.json
   def destroy
-    @dog.destroy
-    update_total_pages(@@max_dogs_per_page)
-    
-    respond_to do |format|
-      format.html { redirect_to dogs_url, notice: 'Dog was successfully destroyed.' }
-      format.json { head :no_content }
+    if current_user_valid?(@dog)
+      @dog.destroy
+      update_total_pages(@@max_dogs_per_page)
+      
+      respond_to do |format|
+        format.html { redirect_to dogs_url, notice: 'Dog was successfully destroyed.' }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to dogs_url, notice: 'Not Allowed' }
+        format.json { head :no_content }
+      end
     end
   end
 

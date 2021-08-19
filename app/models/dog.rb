@@ -2,6 +2,7 @@ class Dog < ApplicationRecord
   has_many_attached :images
 
   #association to the Users table.
+  # belongs to adds validation
   belongs_to :owner,
     foreign_key: :owner_id,
     class_name: "User"

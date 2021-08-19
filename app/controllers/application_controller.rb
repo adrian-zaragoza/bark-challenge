@@ -17,4 +17,8 @@ class ApplicationController < ActionController::Base
     @img_counter += 1
     return @img_counter
   end
+
+  def current_user_valid?(dog)
+    return current_user && current_user.id == dog.owner_id
+  end
 end
